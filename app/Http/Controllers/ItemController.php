@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Item;
+use Validator;
 
 class ItemController extends Controller
 {
@@ -13,7 +15,8 @@ class ItemController extends Controller
      */
     public function index()
     {
-        //
+        $items =Item::all();
+        return response()->json($items);
     }
 
     /**
@@ -34,7 +37,25 @@ class ItemController extends Controller
      */
     public function store(Request $request)
     {
-        //
+      $validator = Validator::make($requet->all(),[
+       'text'=>'required'
+
+     ]);
+
+  if($validator->fails()){
+$response=array('response'=>$validator->message(), 'success'=> false);
+  return response;
+   }
+else{
+$item=new Item;
+$item->text= $request->input('text');
+$item->body= $request->input('body');
+$item->save();
+return response()->json($item);
+
+   }
+
+
     }
 
     /**
@@ -45,7 +66,8 @@ class ItemController extends Controller
      */
     public function show($id)
     {
-        //
+        $item = Item::find($id);
+        return response()->json($item);
     }
 
     /**
@@ -68,7 +90,23 @@ class ItemController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+      $validator = Validator::make($requet->all(),[
+       'text'=>'required'
+
+     ]);
+
+  if($validator->fails()){
+$response=array('response'=>$validator->message(), 'success'=> false);
+  return response;
+   }
+else{
+$item= Item::find($id);
+$item->text= $request->input('text');
+$item->body= $request->input('body');
+$item->save();
+return response()->json($item);
+
+   }
     }
 
     /**
@@ -79,6 +117,10 @@ class ItemController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $item = Item::find($id);
+       $item->delete();
+
+       $response=array('response'=>'Item deleted'->message(), 'success'=> true);
+         return response;
     }
 }
